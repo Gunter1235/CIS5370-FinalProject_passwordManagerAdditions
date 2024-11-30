@@ -1,0 +1,84 @@
+m.py  lines 160-189
+
+#TODO:RAYMOND EDIT
+    strength_label = tk.Label(entryWindow, text="Strength: Not Checked")
+    strength_label.grid(row=4, column=0, columnspan=2, sticky="W")
+
+    # Function to update password strength
+    def update_password_strength():
+        password = passE.get()  # Get password from the entry widget
+        strength = f.check_password_strength(password)  # Call the password strength function from f.py
+        strength_label.config(text=f"Strength: {strength}")  # Update the strength label with password strength
+
+        # Optional: Add color feedback based on strength
+        if strength == "Very Weak" or strength == "Weak":
+            strength_label.config(fg="red")
+        elif strength == "Medium":
+            strength_label.config(fg="orange")
+        else:
+            strength_label.config(fg="green")
+
+    # Bind the password entry widget to update the strength as the user types
+    passE.bind("<KeyRelease>", lambda event: update_password_strength())
+    
+    def generate_and_insert_password():
+        generated_password = f.generate_password(length=16)  # Generate a 16-character password
+        passE.delete(0, tk.END)  # Clear the existing password
+        passE.insert(0, generated_password)  # Insert the generated password
+
+    # Button to generate a secure password
+    generate_button = tk.Button(entryWindow, text="Generate Password", command=generate_and_insert_password)
+    generate_button.grid(row=4, column=1, sticky="E")
+    #TODO:RAYMOND EDIT
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+f.py lines 14-18  &  101-138
+
+#TODO:RAYMOND EDIT
+import zxcvbn
+import secrets
+import string
+#TODO:RAYMOND EDIT
+
+#TODO:RAYMOND EDIT
+def check_password_strength(password):
+    """
+    Function to check the strength of the password using the zxcvbn library.
+    Returns a rating (weak, medium, strong).
+    """
+    result = zxcvbn.password_strength(password)
+    score = result['score']  # score ranges from 0 to 4
+    
+    if score == 0:
+        return "Very Weak"
+    elif score == 1:
+        return "Weak"
+    elif score == 2:
+        return "Medium"
+    elif score == 3:
+        return "Strong"
+    else:
+        return "Very Strong"
+
+
+
+def generate_password(length=12, use_symbols=True):
+    """
+    Generate a secure random password with uppercase, lowercase, digits, and optionally symbols.
+
+    :param length: Length of the generated password (default 12).
+    :param use_symbols: Whether to include symbols in the password (default True).
+    :return: A randomly generated password.
+    """
+    alphabet = string.ascii_letters + string.digits
+    if use_symbols:
+        alphabet += string.punctuation  # Add symbols to the password if requested
+    
+    # Generate a password by randomly selecting characters from the alphabet
+    password = ''.join(secrets.choice(alphabet) for _ in range(length))
+    return password
+#TODO:RAYMOND EDIT
+
